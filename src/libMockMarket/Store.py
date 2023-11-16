@@ -1,7 +1,7 @@
 from StoreInventory import StoreInventory
 from BankAccount import BankAccount
 from Buyable import Buyable, BuyableGame, BuyableFood, BuyableClothing
-
+from clearScreen import clearScreen
 storeInventory = StoreInventory()
 
 # Initialize inventories
@@ -10,7 +10,7 @@ myStuff = list()
 myShoppingCart = list()
 
 # Placeholder bank account
-myBankAccount = BankAccount(1, 'placeholder')
+myBankAccount = BankAccount(1, '')
 
 
 # FUNCTIONS TO MANAGE MENUING SYSTEM IN MAIN SHOPPING PROGRAM
@@ -20,6 +20,7 @@ def viewCatalog():
     item: Buyable
     for item in storeInventory.getFullInventory():
         print(item.name)
+
 
 def buyItem():
     itemName = input('Please type in the name of the item you wish to buy!')
@@ -32,12 +33,13 @@ def buyItem():
     for item in storeInventory.getFullInventory():
         if (item.name.lower() == itemName.lower()):
             itemToPurchase = item
-            break # end loop early if a suitable item is found
+            break  # end loop early if a suitable item is found
 
     # If a suitable item was found, give them the option to buy it!
     if itemToPurchase is not None:
         print(f'We have {itemToPurchase.name} in stock!')
-        userChoice = int(input('Type 1 to BUY NOW, 2 to place in your shopping cart, or any other key to cancel purchase.'))
+        userChoice = int(
+            input('Type 1 to BUY NOW, 2 to place in your shopping cart, or any other key to cancel purchase.'))
 
         if userChoice == 1:
             makePurchaseFromStore(itemToPurchase)
@@ -55,8 +57,10 @@ def reviewMyInventory():
     for item in myStuff:
         print(item.name)
 
+
 def reviewFinancials():
     myBankAccount.balanceReport()
+
 
 def reviewMyShoppingCart():
     if len(myShoppingCart) > 0:
@@ -72,8 +76,9 @@ def reviewMyShoppingCart():
         else:
             print('Leaving shopping cart as is and returning to the storefront ... ')
 
-    else: # If cart is empty
+    else:  # If cart is empty
         print('Your shopping cart is empty! Nothing to see here ... ')
+
 
 def buyItemInShoppingCart():
     userChoice = input('Type in the name of the item you want to buy from the shopping cart: ')
@@ -85,6 +90,7 @@ def buyItemInShoppingCart():
             makePurchaseFromShoppingCart(itemInCart)
         else:
             print('Item could not be found in shopping cart ... ')
+
 
 def removeItemFromShoppingCart(item):
     userChoice = input('Which item would you like to remove from your shopping cart?')
@@ -98,13 +104,16 @@ def removeItemFromShoppingCart(item):
         else:
             print('Item could not be found in your shopping cart. Nothing was removed.')
 
+
 def moveItemToShoppingCart(item):
     myShoppingCart.append(item)
     storeInventory.removeItemFromInventory(item)
 
+
 def moveItemFromShoppingCartToInventory(item):
     storeInventory.restockItemToInventory(item)
     myShoppingCart.remove(item)
+
 
 def makePurchaseFromStore(item):
     # If you can afford the item, buy it and remove it from the store
@@ -115,6 +124,7 @@ def makePurchaseFromStore(item):
         storeInventory.removeItemFromInventory(item)
     else:
         print('You can\'t afford this item ... ')
+
 
 def makePurchaseFromShoppingCart(item):
     # If you can afford the item, buy it and remove it from the store
@@ -127,20 +137,26 @@ def makePurchaseFromShoppingCart(item):
         print('You can\'t afford that item ... ')
 
 
-
-
 # PROGRAM BEGINS HERE
 print('Welcome to my storefront!')
 
-# setup bank account
-print('To begin, please set up a bank account.')
-deposit = input('How much do you want to deposit into your account?')
-myBankAccount = BankAccount(deposit)
 
-#Begin shopping
+def setupBankAccount():
+    # setup bank account
+    print('To begin, please set up a bank account.')
+    deposit = input('How much do you want to deposit into your account? ')
+    if deposit != '':
+        myBankAccount = BankAccount(deposit)
+    else:
+        print("LOL! you are bankrupt!!")
+        myBankAccount = BankAccount(0)
+
+setupBankAccount()
+
+# Begin shopping
 stillShopping = True
 
-while(stillShopping):
+while (stillShopping):
     print("\n****************************************************** ")
     print("Please choose from one of the following menu options: ")
     print("1. View catalog of items to buy")
