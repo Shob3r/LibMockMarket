@@ -29,9 +29,9 @@ def buyItem():
     itemToPurchase = None
 
     # Look through the full inventory to see if the item is present
-    # Convert both item name and user input to lower case to preven case issues!
+    # Convert both item name and user input to lower case to prevent case issues!
     for item in storeInventory.getFullInventory():
-        if (item.name.lower() == itemName.lower()):
+        if item.name.lower() == itemName.lower():
             itemToPurchase = item
             break  # end loop early if a suitable item is found
 
@@ -164,25 +164,26 @@ while (stillShopping):
     print("3. View your cart of held items")
     print("4. Review the items you already own")
     print("5. View the status of your financials")
-    print("6. YOUR CUSTOM IDEA HERE??")
+    print("6. Launch Store GUI")
     print("7. Exit program")
 
     userChoice = int(input())
-
-    if userChoice == 1:
-        viewCatalog()
-    elif userChoice == 2:
-        buyItem()
-    elif userChoice == 3:
-        reviewMyShoppingCart()
-    elif userChoice == 4:
-        reviewMyInventory()
-    elif userChoice == 5:
-        reviewFinancials()
-    elif userChoice == 6:
-        print("YOUR CONTENT HERE!")
-    elif userChoice == 7:
-        print('Thanks for shopping! Now exiting program ... ')
-        stillShopping = False
-    else:
+    if userChoice < 1 or userChoice > 7:
+        clearScreen()
         print('Incorrect input! Please choose again.')
+    match userChoice:
+        case 1:
+            viewCatalog()
+        case 2:
+            buyItem()
+        case 3:
+            reviewMyShoppingCart()
+        case 4:
+            reviewMyInventory()
+        case 5:
+            reviewFinancials()
+        case 6:
+            print("YOUR CONTENT HERE!")
+        case 7:
+            print('Thanks for shopping! Now exiting program ... ')
+            stillShopping = False

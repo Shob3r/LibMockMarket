@@ -1,6 +1,8 @@
+from clearScreen import clearScreen
+
 class BankAccount:
 
-    def __init__(self, initialDeposit, password=None):
+    def __init__(self, initialDeposit, password = None):
         self.balance = float(initialDeposit)
         if password is None:
             self.setPassword()
@@ -8,16 +10,22 @@ class BankAccount:
     def setPassword(self):
         global password
         password = input('Please enter a password for your account: ')
-        if password is not None:
-            confirmPassword = input('Please input your password one more time to confirm it!')
-            if password != confirmPassword:
-                print('Your passwords to not match ... ')
-                self.setPassword()
-            else:
-                print('Password set! Your account is now ready!')
-        else:
-            print("Please enter a password!")
+        if password == '':
+            print("Passwords cannot be empty!")
+            clearScreen()
             self.setPassword()
+        else:
+            if password is not None:
+                confirmPassword = input('Please input your password one more time to confirm it!')
+                if password != confirmPassword:
+                    print('Your passwords to not match ... ')
+                    self.setPassword()
+                else:
+                    print('Password set! Your account is now ready!')
+                    return
+            else:
+                print("Please enter a password!")
+                self.setPassword()
 
     # Returns true if you have more balance than cost, false if you don't
     def canAfford(self, amount):
