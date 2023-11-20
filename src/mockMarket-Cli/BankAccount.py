@@ -52,7 +52,7 @@ class BankAccount:
 
     def checkPassword(self):
         passEntry = input('Please enter your password to confirm your identity: ')
-        if (passEntry == password):
+        if passEntry == password:
             return True
         else:
             print('Incorrect password!')

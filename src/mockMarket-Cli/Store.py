@@ -19,7 +19,7 @@ def viewCatalog():
     print('Here is a list of all of the items currently for sale!')
     item: Buyable
     for item in storeInventory.getFullInventory():
-        print(item.name)
+        print(item.name, "$", item.price)
 
 
 def buyItem():
@@ -157,7 +157,7 @@ setupBankAccount()
 stillShopping = True
 
 while (stillShopping):
-    print("\n****************************************************** ")
+    print("\n------------------------------------------------------------ ")
     print("Please choose from one of the following menu options: ")
     print("1. View catalog of items to buy")
     print("2. Buy an item")
