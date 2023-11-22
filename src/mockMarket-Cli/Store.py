@@ -2,7 +2,6 @@ from StoreInventory import StoreInventory
 from BankAccount import BankAccount
 from Buyable import Buyable, BuyableGame, BuyableFood, BuyableClothing
 from clearScreen import clearScreen
-storeInventory = StoreInventory()
 
 # Initialize inventories
 storeInventory = StoreInventory()
@@ -18,8 +17,9 @@ myBankAccount = BankAccount(1, '')
 def viewCatalog():
     print('Here is a list of all of the items currently for sale!')
     item: Buyable
-    for item in storeInventory.getFullInventory():
-        print(item.name, "$", item.price)
+    storeInventory.getFullInventory()
+    #for item in storeInventory.getFullInventory():
+    #    print(item.name, "$", item.price)
 
 
 def buyItem():

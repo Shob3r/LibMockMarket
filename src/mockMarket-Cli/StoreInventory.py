@@ -1,6 +1,5 @@
 from Buyable import Buyable, BuyableClothing, BuyableFood, BuyableGame
 
-
 class StoreInventory:
 
     def __init__(self):
@@ -10,8 +9,26 @@ class StoreInventory:
         self.initializeInventoryLists()
 
     def getFullInventory(self):
-        return self.clothesForSale + self.foodForSale + self.gamesForSale
+        # return self.clothesForSale + self.foodForSale + self.gamesForSale
+        self.getClothesInventory()
+        self.getFoodInventory()
+        self.getGamesInventory()
+    def getClothesInventory(self):
+        print("-*-*-*--Clothes--*-*-*-")
+        item : Buyable
+        for item in self.ClothesForSale():
+            print("$", item.price, item.name, "Quantity: ", "1")
 
+    def getFoodInventory(self):
+        print("-*-*-*--Food--*-*-*-")
+        item : Buyable
+        for item in self.FoodForSale():
+            print("$", item.price, item.name, "Quantity: ", "1")
+    def getGamesInventory(self):
+        print("-*-*-*--Games--*-*-*-")
+        item : Buyable
+        for item in self.GamesForSale():
+            print("$", item.price, item.name, "Quantity: ", "1")
     def removeItemFromInventory(self, item):
         if type(item) is BuyableClothing:
             self.clothesForSale.remove(item)
@@ -41,9 +58,6 @@ class StoreInventory:
 
     def initializeInventoryLists(self):
         # Populate initial clothes list
-        # Hoodies
-        smallHoodie = BuyableClothing(59.99, 'Hoodie', 'small')
-        self.clothesForSale.append(smallHoodie)  # You can add this way, but it is more efficient to do as below ...
         self.clothesForSale.append(BuyableClothing(59.99, 'Hoodie', 'medium'))
         self.clothesForSale.append(BuyableClothing(59.99, 'Hoodie', 'large'))
 
@@ -73,5 +87,12 @@ class StoreInventory:
         self.gamesForSale.append(BuyableGame(24.99, 'Scrabble', 2, 'Board Game'))
 
         # Computer Games
-        self.gamesForSale.append(BuyableGame(79.99, 'Breath of the Wild', 2, 'Video Game'))
-        self.gamesForSale.append(BuyableGame(59.99, 'Forza', 2, 'Video Game'))
+        self.gamesForSale.append(BuyableGame(79.99, 'Breath of the Wild', 2, 'Open-World'))
+        self.gamesForSale.append(BuyableGame(59.99, 'Forza', 2, 'Racing/Open-World'))
+
+    def ClothesForSale(self):
+        return self.clothesForSale
+    def FoodForSale(self):
+        return self.foodForSale
+    def GamesForSale(self):
+        return self.gamesForSale
