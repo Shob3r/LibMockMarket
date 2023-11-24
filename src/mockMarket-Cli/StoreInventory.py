@@ -1,34 +1,47 @@
 from Buyable import Buyable, BuyableClothing, BuyableFood, BuyableGame
 
+
 class StoreInventory:
 
     def __init__(self):
         self.clothesForSale = []
         self.foodForSale = []
         self.gamesForSale = []
+        self.allItems = []
         self.initializeInventoryLists()
+        self.fullInvList()
+
+    def returnFullInventory(self):
+        return self.foodForSale + self.clothesForSale + self.gamesForSale
+
+    def fullInvList(self):
+        item: Buyable
+        for item in self.returnFullInventory():
+            self.allItems.append(item.name)
 
     def getFullInventory(self):
-        # return self.clothesForSale + self.foodForSale + self.gamesForSale
         self.getClothesInventory()
         self.getFoodInventory()
         self.getGamesInventory()
+
     def getClothesInventory(self):
         print("-*-*-*--Clothes--*-*-*-")
-        item : Buyable
-        for item in self.ClothesForSale():
-            print("$", item.price, item.name, "Quantity: ", "1")
+        item: BuyableClothing
+        for item in self.clothesForSale:
+            print(f"{item.size} {item.name}, Price: ${item.price}")
 
     def getFoodInventory(self):
         print("-*-*-*--Food--*-*-*-")
-        item : Buyable
-        for item in self.FoodForSale():
-            print("$", item.price, item.name, "Quantity: ", "1")
+        item: BuyableFood
+        for item in self.foodForSale:
+            print(f"{item.name}, Weight: {item.weight}g, Price: ${item.price}")
+
     def getGamesInventory(self):
         print("-*-*-*--Games--*-*-*-")
-        item : Buyable
-        for item in self.GamesForSale():
-            print("$", item.price, item.name, "Quantity: ", "1")
+        item: BuyableGame
+        for item in self.gamesForSale:
+            print(f"{item.name}, Genre: {item.genre}, {item.numPlayers} player game, Price: ${item.price}")
+
     def removeItemFromInventory(self, item):
         if type(item) is BuyableClothing:
             self.clothesForSale.remove(item)
@@ -72,7 +85,7 @@ class StoreInventory:
         # Populate initial food list
         # Perishables
         self.foodForSale.append(BuyableFood(12.99, 'Pizza', 400))
-        self.foodForSale.append(BuyableFood(24.00, 'Lasagna', 1000))
+        self.foodForSale.append(BuyableFood(24, 'Lasagna', 1000))
         self.foodForSale.append(BuyableFood(3.99, 'Spinach', 250))
 
         # Non-perishables
@@ -89,10 +102,3 @@ class StoreInventory:
         # Computer Games
         self.gamesForSale.append(BuyableGame(79.99, 'Breath of the Wild', 2, 'Open-World'))
         self.gamesForSale.append(BuyableGame(59.99, 'Forza', 2, 'Racing/Open-World'))
-
-    def ClothesForSale(self):
-        return self.clothesForSale
-    def FoodForSale(self):
-        return self.foodForSale
-    def GamesForSale(self):
-        return self.gamesForSale

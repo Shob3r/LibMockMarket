@@ -14,32 +14,18 @@ myBankAccount = BankAccount(1, '')
 
 # FUNCTIONS TO MANAGE MENUING SYSTEM IN MAIN SHOPPING PROGRAM
 
-def viewCatalog():
-    print('Here is a list of all of the items currently for sale!')
-    item: Buyable
-    storeInventory.getFullInventory()
-    #for item in storeInventory.getFullInventory():
-    #    print(item.name, "$", item.price)
-
-
 def buyItem():
-    itemName = input('Please type in the name of the item you wish to buy!')
+    itemName = input('Please type in the name of the item you wish to buy! ')
+    print(itemName)
 
-    # Holding variable for the desired item, if found
     itemToPurchase = None
-
-    # Look through the full inventory to see if the item is present
-    # Convert both item name and user input to lower case to prevent case issues!
-    for item in storeInventory.getFullInventory():
-        if item.name.lower() == itemName.lower():
-            itemToPurchase = item
-            break  # end loop early if a suitable item is found
+    for x in range(len(storeInventory.allItems)):
+        print(storeInventory.allItems[x])
 
     # If a suitable item was found, give them the option to buy it!
     if itemToPurchase is not None:
         print(f'We have {itemToPurchase.name} in stock!')
-        userChoice = int(
-            input('Type 1 to BUY NOW, 2 to place in your shopping cart, or any other key to cancel purchase.'))
+        userChoice = int(input('Type 1 to BUY NOW, 2 to place in your shopping cart, or any other key to cancel purchase.'))
 
         if userChoice == 1:
             makePurchaseFromStore(itemToPurchase)
@@ -107,7 +93,7 @@ def removeItemFromShoppingCart(item):
 
 def moveItemToShoppingCart(item):
     myShoppingCart.append(item)
-    storeInventory.removeItemFromInventory(item)
+    storeInventory.allItems.remove(item)
 
 
 def moveItemFromShoppingCartToInventory(item):
@@ -173,7 +159,7 @@ while (stillShopping):
         print('Incorrect input! Please choose again.')
     match userChoice:
         case 1:
-            viewCatalog()
+            storeInventory.getFullInventory()
         case 2:
             buyItem()
         case 3:
