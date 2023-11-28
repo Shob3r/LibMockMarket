@@ -8,34 +8,19 @@ storeInventory = StoreInventory()
 myStuff = list()
 myShoppingCart = list()
 
-# Placeholder bank account
-myBankAccount = BankAccount(1, '')
+# Other Variables
+allStoreItems = storeInventory.allItems
 
 
 # FUNCTIONS TO MANAGE MENUING SYSTEM IN MAIN SHOPPING PROGRAM
 
 def buyItem():
-    itemName = input('Please type in the name of the item you wish to buy! ')
-    print(itemName)
+    userItem = input("Which item would you like to buy?").lower()
+    # print(userItem)
 
-    itemToPurchase = None
-    for x in range(len(storeInventory.allItems)):
-        print(storeInventory.allItems[x])
-
-    # If a suitable item was found, give them the option to buy it!
-    if itemToPurchase is not None:
-        print(f'We have {itemToPurchase.name} in stock!')
-        userChoice = int(input('Type 1 to BUY NOW, 2 to place in your shopping cart, or any other key to cancel purchase.'))
-
-        if userChoice == 1:
-            makePurchaseFromStore(itemToPurchase)
-        elif userChoice == 2:
-            print('We will hold onto this item for you. Adding to shopping cart ... ')
-            moveItemToShoppingCart(itemToPurchase)
-        else:
-            print('Purchase cancelled! Sending you back to the storefront ... ')
-    else:  # If user-entered item is not found in the store inventory
-        print('The item you are looking for is sold out or does not exist. Sorry!')
+    if userItem is not None:
+        for x in allStoreItems:
+            print(allStoreItems.index(x))
 
 
 def reviewMyInventory():
@@ -45,7 +30,34 @@ def reviewMyInventory():
 
 
 def reviewFinancials():
-    myBankAccount.balanceReport()
+    print(f"Would you like to deposit money into the account?")
+
+    print(f"\n1. Yes")
+    print(f"2. No")
+    try:
+        depositCheck = int(input())
+        if 1 <= depositCheck <= 2:
+            match depositCheck:
+                case 1:
+                    try:
+                        howMuchToDeposit = float(input("How much money would you like to deposit into your account?"))
+                    except ValueError:
+                        print("ERROR: value is not valid")
+                        return
+
+                    if howMuchToDeposit < 0:
+                        print("ERROR: Cannot deposit a negative value into an account!")
+                        return
+                    myBankAccount.makeDeposit(howMuchToDeposit)
+                case 2:
+                    print("Not making a deposit!")
+                    return
+        else:
+            print("Pick a choice between 1 and 2!")
+    except TypeError:
+        print("Pick a valid number!")
+        reviewFinancials()
+        return
 
 
 def reviewMyShoppingCart():
@@ -55,9 +67,9 @@ def reviewMyShoppingCart():
             print(item.name)
 
         # Check to see if the user wants to purchase anything currently in their shopping cart
-        userChoice = int(input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
+        shoppingCartChoice = int(input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
 
-        if userChoice == 1:
+        if shoppingCartChoice == 1:
             buyItemInShoppingCart()
         else:
             print('Leaving shopping cart as is and returning to the storefront ... ')
@@ -130,19 +142,29 @@ print('Welcome to my storefront!')
 def setupBankAccount():
     # setup bank account
     print('To begin, please set up a bank account.')
-    deposit = input('How much do you want to deposit into your account? ')
-    if deposit != '':
-        myBankAccount = BankAccount(deposit)
-    else:
-        print("LOL! you are bankrupt!!")
-        myBankAccount = BankAccount(0)
+    try:
+        deposit = float(input('How much do you want to deposit into your account? '))
+        if deposit <= 0:
+            print("LOL! you are bankrupt!!")
+            global myBankAccount
+            myBankAccount = BankAccount(0)
+        else:
+            global myBankAccount
+            myBankAccount = BankAccount(deposit)
+    except ValueError:
+        print("Please enter a valid integer!")
+        setupBankAccount()
+        return
+
+
+
 
 setupBankAccount()
 
 # Begin shopping
 stillShopping = True
 
-while (stillShopping):
+while stillShopping:
     print("\n------------------------------------------------------------ ")
     print("Please choose from one of the following menu options: ")
     print("1. View catalog of items to buy")
@@ -167,6 +189,7 @@ while (stillShopping):
         case 4:
             reviewMyInventory()
         case 5:
+            print(f"you currently have ${myBankAccount.balanceReport()} in your bank account")
             reviewFinancials()
         case 6:
             print("YOUR CONTENT HERE!")
