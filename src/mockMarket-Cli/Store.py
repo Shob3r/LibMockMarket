@@ -11,6 +11,9 @@ myShoppingCart = list()
 # Other Variables
 allStoreItems = storeInventory.allItems
 
+# Placeholder bank account
+myBankAccount = BankAccount(0, '')
+
 
 # FUNCTIONS TO MANAGE MENUING SYSTEM IN MAIN SHOPPING PROGRAM
 
@@ -67,7 +70,8 @@ def reviewMyShoppingCart():
             print(item.name)
 
         # Check to see if the user wants to purchase anything currently in their shopping cart
-        shoppingCartChoice = int(input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
+        shoppingCartChoice = int(
+            input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
 
         if shoppingCartChoice == 1:
             buyItemInShoppingCart()
@@ -91,12 +95,12 @@ def buyItemInShoppingCart():
 
 
 def removeItemFromShoppingCart(item):
-    userChoice = input('Which item would you like to remove from your shopping cart?')
+    removeChoice = input('Which item would you like to remove from your shopping cart?')
 
     # Compare user requested name with cart entry names and remove item if found
     itemInCart: Buyable
     for itemInCart in myShoppingCart:
-        if itemInCart.name.lower() == userChoice.lower():
+        if itemInCart.name.lower() == removeChoice.lower():
             print(f'You have removed {itemInCart.name} from your shopping cart!')
             moveItemFromShoppingCartToInventory(itemInCart)
         else:
@@ -143,56 +147,57 @@ def setupBankAccount():
     # setup bank account
     print('To begin, please set up a bank account.')
     try:
-        deposit = float(input('How much do you want to deposit into your account? '))
-        if deposit <= 0:
+        deposit = input('How much do you want to deposit into your account? ')
+        depositCheck = float(deposit)
+
+        if depositCheck <= 0:
             print("LOL! you are bankrupt!!")
-            global myBankAccount
-            myBankAccount = BankAccount(0)
-        else:
-            global myBankAccount
-            myBankAccount = BankAccount(deposit)
+        myBankAccount.makeInitialDeposit(depositCheck)
+
     except ValueError:
         print("Please enter a valid integer!")
         setupBankAccount()
         return
 
+    myBankAccount.setPassword()
+
+def shoppingMenu():
+    stillShopping = True
+
+    while stillShopping:
+        print("\n------------------------------------------------------------ ")
+        print("Please choose from one of the following menu options: ")
+        print("1. View catalog of items to buy")
+        print("2. Buy an item")
+        print("3. View your cart of held items")
+        print("4. Review the items you already own")
+        print("5. View the status of your financials")
+        print("6. Launch Store GUI")
+        print("7. Exit program")
+
+        userChoice = int(input())
+        if userChoice < 1 or userChoice > 7:
+            clearScreen()
+            print('Incorrect input! Please choose again.')
+        match userChoice:
+            case 1:
+                storeInventory.getFullInventory()
+            case 2:
+                buyItem()
+            case 3:
+                reviewMyShoppingCart()
+            case 4:
+                reviewMyInventory()
+            case 5:
+                print(f"you currently have ${myBankAccount.balanceReport()} in your bank account")
+                reviewFinancials()
+            case 6:
+                print("YOUR CONTENT HERE!")
+            case 7:
+                print('Thanks for shopping! Now exiting program ... ')
+                stillShopping = False
 
 
 
 setupBankAccount()
-
-# Begin shopping
-stillShopping = True
-
-while stillShopping:
-    print("\n------------------------------------------------------------ ")
-    print("Please choose from one of the following menu options: ")
-    print("1. View catalog of items to buy")
-    print("2. Buy an item")
-    print("3. View your cart of held items")
-    print("4. Review the items you already own")
-    print("5. View the status of your financials")
-    print("6. Launch Store GUI")
-    print("7. Exit program")
-
-    userChoice = int(input())
-    if userChoice < 1 or userChoice > 7:
-        clearScreen()
-        print('Incorrect input! Please choose again.')
-    match userChoice:
-        case 1:
-            storeInventory.getFullInventory()
-        case 2:
-            buyItem()
-        case 3:
-            reviewMyShoppingCart()
-        case 4:
-            reviewMyInventory()
-        case 5:
-            print(f"you currently have ${myBankAccount.balanceReport()} in your bank account")
-            reviewFinancials()
-        case 6:
-            print("YOUR CONTENT HERE!")
-        case 7:
-            print('Thanks for shopping! Now exiting program ... ')
-            stillShopping = False
+shoppingMenu()

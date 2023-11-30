@@ -1,8 +1,9 @@
 from clearScreen import clearScreen
 
+
 class BankAccount:
 
-    def __init__(self, initialDeposit, password = None):
+    def __init__(self, initialDeposit, password=None):
         self.balance = float(initialDeposit)
         if password is None:
             self.setPassword()
@@ -50,7 +51,10 @@ class BankAccount:
     def makeDeposit(self, depositAmount):
         if self.checkPassword():
             self.balance += depositAmount
-            print(f"Deposit completed! you now have {self.balance} on your account!")
+            print(f"Deposit completed! you now have ${self.balance} on your account!")
+
+    def makeInitialDeposit(self, initialDepositAmount):
+        self.balance += initialDepositAmount
 
     def balanceReport(self):
         print(f'You have $ {self.balance} left in your account.')
