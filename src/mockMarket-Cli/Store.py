@@ -5,6 +5,7 @@ from clearScreen import clearScreen
 
 # Initialize inventories
 storeInventory = StoreInventory()
+
 myStuff = list()
 myShoppingCart = list()
 
@@ -19,11 +20,39 @@ myBankAccount = BankAccount(0, '')
 
 def buyItem():
     userItem = input("Which item would you like to buy?").lower()
-    # print(userItem)
 
+    itemPlace = 0
     if userItem is not None:
-        for x in allStoreItems:
-            print(allStoreItems.index(x))
+        for x in storeInventory.allItems:  # storeInventory.allItems only contains the names of the items in the store inventory
+
+            if str(storeInventory.allItems[x]).lower() == userItem:  # Convert element x into string and change it to lowercase, then check if it's the same as the user input. If it isn't do it again until it is or there are no more elements to loop through
+                itemPlace = x
+                print("The item you are looking for is in stock!")
+                print("Would you like to add this to your cart or check out now?")
+                print("1. Add to cart")
+                print("2. Check out now")
+                print("3. Cancel")
+
+                try:
+                    cartInput = int(input("(1-3) "))
+                    if 3 >= cartInput >= 1:  # There HAS to be a better way to do this (maybe clamping the variable or something)
+                        match cartInput:
+                            case 1:
+                                moveItemToShoppingCart(storeInventory.allItems[itemPlace])
+                                break
+                            case 2:
+                                moveItemToShoppingCart(storeInventory.allItems[itemPlace])
+                                buyItemInShoppingCart()
+                                break
+                            case 3:
+                                # Do Nothing
+                                break
+                except ValueError:
+                    print("Please pick a valid value!")
+                    break
+
+                break
+        print("Item not found! please try again!")
 
 
 def reviewMyInventory():
@@ -70,26 +99,25 @@ def reviewMyShoppingCart():
             print(item.name)
 
         # Check to see if the user wants to purchase anything currently in their shopping cart
-        shoppingCartChoice = int(
-            input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
+        shoppingCartChoice = int(input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
 
         if shoppingCartChoice == 1:
             buyItemInShoppingCart()
         else:
-            print('Leaving shopping cart as is and returning to the storefront ... ')
+            print('Leaving shopping cart as is and returning to the storefront... ')
 
     else:  # If cart is empty
-        print('Your shopping cart is empty! Nothing to see here ... ')
+        print('Your shopping cart is empty! Nothing to see here... ')
 
 
 def buyItemInShoppingCart():
     userChoice = input('Type in the name of the item you want to buy from the shopping cart: ')
 
     # Compare user requested name with cart entry names and offer a purchasing offer if there is a match
-    itemInCart: Buyable
-    for itemInCart in myShoppingCart:
-        if itemInCart.name.lower() == userChoice.lower():
-            makePurchaseFromShoppingCart(itemInCart)
+
+    for i in myShoppingCart:
+        if myShoppingCart[i].lower() == userChoice.lower():
+            makePurchaseFromShoppingCart(myShoppingCart[i])
         else:
             print('Item could not be found in shopping cart ... ')
 
@@ -131,16 +159,18 @@ def makePurchaseFromStore(item):
 def makePurchaseFromShoppingCart(item):
     # If you can afford the item, buy it and remove it from the store
     if myBankAccount.canAfford(item.price):
-        myBankAccount.makePurchase(item.price)
-        print(f'Purchase complete! You now own {item.name}')
-        myStuff.append(item)
-        myShoppingCart.remove(item)
+
+        if myBankAccount.checkPassword():  # Check for password
+            myBankAccount.makePurchase(item.price)
+            print(f'Purchase complete! You now own {item.name}')
+            myStuff.append(item)
+            myShoppingCart.remove(item)
     else:
         print('You can\'t afford that item ... ')
 
 
 # PROGRAM BEGINS HERE
-print('Welcome to my storefront!')
+print('Welcome to the cool people store B)')
 
 
 def setupBankAccount():
@@ -160,6 +190,7 @@ def setupBankAccount():
         return
 
     myBankAccount.setPassword()
+
 
 def shoppingMenu():
     stillShopping = True
@@ -196,7 +227,6 @@ def shoppingMenu():
             case 7:
                 print('Thanks for shopping! Now exiting program ... ')
                 stillShopping = False
-
 
 
 setupBankAccount()

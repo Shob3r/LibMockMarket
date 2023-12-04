@@ -50,6 +50,10 @@ class StoreInventory:
         elif type(item) is BuyableGame:
             self.gamesForSale.remove(item)
 
+            # Reset All Items List
+            self.allItems = []
+            self.fullInvList()
+
     def restockItemToInventory(self, item):
         if type(item) is BuyableClothing:
             self.clothesForSale.append(item)
@@ -57,6 +61,10 @@ class StoreInventory:
             self.foodForSale.append(item)
         elif type(item) is BuyableGame:
             self.gamesForSale.append(item)
+
+        # Reset All Items List
+        self.allItems = []
+        self.fullInvList()
 
     def addMultiple(self, item, num):
         if type(item) is BuyableClothing:
