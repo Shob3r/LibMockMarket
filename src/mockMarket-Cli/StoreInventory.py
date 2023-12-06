@@ -17,7 +17,7 @@ class StoreInventory:
     def fullInvList(self):
         item: Buyable
         for item in self.returnFullInventory():
-            self.allItems.append(item.name)
+            self.allItems.append(item)
 
     def getFullInventory(self):
         self.getClothesInventory()
@@ -28,7 +28,7 @@ class StoreInventory:
         print("-*-*-*--Clothes--*-*-*-")
         item: BuyableClothing
         for item in self.clothesForSale:
-            print(f"{item.size} {item.name}, Price: ${item.price}")
+            print(f"Size {item.size} {item.name}, Price: ${item.price}")
 
     def getFoodInventory(self):
         print("-*-*-*--Food--*-*-*-")

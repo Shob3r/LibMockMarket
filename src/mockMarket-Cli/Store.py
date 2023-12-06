@@ -18,41 +18,58 @@ myBankAccount = BankAccount(0, '')
 
 # FUNCTIONS TO MANAGE MENUING SYSTEM IN MAIN SHOPPING PROGRAM
 
+def clampValue(valueToClamp, minRange, maxRange):
+    # Chatting up the GPT or whatever it's called
+    return max(min(valueToClamp, maxRange), minRange)
+
+
 def buyItem():
     userItem = input("Which item would you like to buy?").lower()
+    storeItems: Buyable
+    item = 0
 
-    itemPlace = 0
-    if userItem is not None:
-        for x in storeInventory.allItems:  # storeInventory.allItems only contains the names of the items in the store inventory
+    isItemFound = False
 
-            if str(storeInventory.allItems[x]).lower() == userItem:  # Convert element x into string and change it to lowercase, then check if it's the same as the user input. If it isn't do it again until it is or there are no more elements to loop through
-                itemPlace = x
-                print("The item you are looking for is in stock!")
-                print("Would you like to add this to your cart or check out now?")
-                print("1. Add to cart")
-                print("2. Check out now")
-                print("3. Cancel")
+    for storeItems in storeInventory.returnFullInventory():
+        item += 1
 
+        if storeItems.name.lower() == userItem:
+            isItemFound = True
+
+            print("Item found in our stock!")
+            print(f"Found at place ")
+            print("Would you like to:")
+            print("1. BUY NOW")
+            print("2. Add To cart")
+            print("3. Cancel Purchase")
+
+            choosing = True
+
+            while choosing:
                 try:
-                    cartInput = int(input("(1-3) "))
-                    if 3 >= cartInput >= 1:  # There HAS to be a better way to do this (maybe clamping the variable or something)
-                        match cartInput:
-                            case 1:
-                                moveItemToShoppingCart(storeInventory.allItems[itemPlace])
-                                break
-                            case 2:
-                                moveItemToShoppingCart(storeInventory.allItems[itemPlace])
-                                buyItemInShoppingCart()
-                                break
-                            case 3:
-                                # Do Nothing
-                                break
+                    itemFoundChoice = int(input("(1-3) "))
                 except ValueError:
-                    print("Please pick a valid value!")
+                    print("Please choose a valid value!")
                     break
 
-                break
-        print("Item not found! please try again!")
+                itemFoundChoice = clampValue(itemFoundChoice, 1, 3)
+                match itemFoundChoice:
+                    case 1:
+                        print("Ok, buying now!")
+                        moveItemToShoppingCart(storeInventory.allItems[item])
+                        makePurchaseFromStore(storeInventory.allItems[item])
+                        break
+                    case 2:
+                        print("Ok, Adding to cart!")
+                        moveItemToShoppingCart(storeInventory.allItems[item])
+                        break
+                    case 3:
+                        print("Cancelling Purchase...")
+                        choosing = False
+                        break
+
+    if not isItemFound:
+        print("Item Not Found!")
 
 
 def reviewMyInventory():
@@ -64,7 +81,7 @@ def reviewMyInventory():
 def reviewFinancials():
     print(f"Would you like to deposit money into the account?")
 
-    print(f"\n1. Yes")
+    print(f"1. Yes")
     print(f"2. No")
     try:
         depositCheck = int(input())
@@ -72,17 +89,17 @@ def reviewFinancials():
             match depositCheck:
                 case 1:
                     try:
-                        howMuchToDeposit = float(input("How much money would you like to deposit into your account?"))
+                        howMuchToDeposit = float(input(f"How much money would you like to deposit into your account?"))
                     except ValueError:
                         print("ERROR: value is not valid")
                         return
 
                     if howMuchToDeposit < 0:
-                        print("ERROR: Cannot deposit a negative value into an account!")
+                        print(f"ERROR: Cannot deposit a negative value into an account!")
                         return
                     myBankAccount.makeDeposit(howMuchToDeposit)
                 case 2:
-                    print("Not making a deposit!")
+                    print(f"Not making a deposit!")
                     return
         else:
             print("Pick a choice between 1 and 2!")
@@ -99,7 +116,8 @@ def reviewMyShoppingCart():
             print(item.name)
 
         # Check to see if the user wants to purchase anything currently in their shopping cart
-        shoppingCartChoice = int(input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
+        shoppingCartChoice = int(
+            input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
 
         if shoppingCartChoice == 1:
             buyItemInShoppingCart()
@@ -146,6 +164,7 @@ def moveItemFromShoppingCartToInventory(item):
 
 
 def makePurchaseFromStore(item):
+
     # If you can afford the item, buy it and remove it from the store
     if myBankAccount.canAfford(item.price):
         myBankAccount.makePurchase(item.price)
@@ -207,9 +226,8 @@ def shoppingMenu():
         print("7. Exit program")
 
         userChoice = int(input())
-        if userChoice < 1 or userChoice > 7:
-            clearScreen()
-            print('Incorrect input! Please choose again.')
+        userChoice = clampValue(userChoice, 1, 7)
+
         match userChoice:
             case 1:
                 storeInventory.getFullInventory()
