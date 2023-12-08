@@ -37,7 +37,6 @@ def buyItem():
             isItemFound = True
 
             print("Item found in our stock!")
-            print(f"Found at place ")
             print("Would you like to:")
             print("1. BUY NOW")
             print("2. Add To cart")
@@ -56,12 +55,13 @@ def buyItem():
                 match itemFoundChoice:
                     case 1:
                         print("Ok, buying now!")
-                        moveItemToShoppingCart(storeInventory.allItems[item])
-                        makePurchaseFromStore(storeInventory.allItems[item])
+                        makePurchaseFromStore(storeInventory.allItems[item - 1])
+                        choosing = False
                         break
                     case 2:
-                        print("Ok, Adding to cart!")
-                        moveItemToShoppingCart(storeInventory.allItems[item])
+                        print("Ok, adding to shopping cart!")
+                        moveItemToShoppingCart(storeInventory.allItems[item - 1])
+                        choosing = False
                         break
                     case 3:
                         print("Cancelling Purchase...")
@@ -116,8 +116,7 @@ def reviewMyShoppingCart():
             print(item.name)
 
         # Check to see if the user wants to purchase anything currently in their shopping cart
-        shoppingCartChoice = int(
-            input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
+        shoppingCartChoice = int(input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
 
         if shoppingCartChoice == 1:
             buyItemInShoppingCart()
