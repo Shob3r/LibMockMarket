@@ -2,25 +2,18 @@ from StoreInventory import StoreInventory
 from BankAccount import BankAccount
 from Buyable import Buyable, BuyableGame, BuyableFood, BuyableClothing
 from clearScreen import clearScreen
+from ClampValue import ClampValue
 
 # Initialize inventories
 storeInventory = StoreInventory()
-
 myStuff = list()
 myShoppingCart = list()
 
 # Other Variables
 allStoreItems = storeInventory.allItems
 
-# Placeholder bank account
+# Placeholder bank account (Gets replaced on program start with an actual Bank Account)
 myBankAccount = BankAccount(0, '')
-
-
-# FUNCTIONS TO MANAGE MENUING SYSTEM IN MAIN SHOPPING PROGRAM
-
-def clampValue(valueToClamp, minRange, maxRange):
-    # Chatting up the GPT or whatever it's called
-    return max(min(valueToClamp, maxRange), minRange)
 
 
 def buyItem():
@@ -42,31 +35,28 @@ def buyItem():
             print("2. Add To cart")
             print("3. Cancel Purchase")
 
-            choosing = True
+            try:
+                itemFoundChoice = int(input("(1-3) "))
+            except ValueError:
+                print("Please choose a valid value!")
+                break
 
-            while choosing:
-                try:
-                    itemFoundChoice = int(input("(1-3) "))
-                except ValueError:
-                    print("Please choose a valid value!")
+            itemFoundChoice = ClampValue(itemFoundChoice, 1, 3)
+            match itemFoundChoice:
+                case 1:
+                    print("Ok, buying now!")
+                    makePurchaseFromStore(storeInventory.allItems[item - 1])
                     break
 
-                itemFoundChoice = clampValue(itemFoundChoice, 1, 3)
-                match itemFoundChoice:
-                    case 1:
-                        print("Ok, buying now!")
-                        makePurchaseFromStore(storeInventory.allItems[item - 1])
-                        choosing = False
-                        break
-                    case 2:
-                        print("Ok, adding to shopping cart!")
-                        moveItemToShoppingCart(storeInventory.allItems[item - 1])
-                        choosing = False
-                        break
-                    case 3:
-                        print("Cancelling Purchase...")
-                        choosing = False
-                        break
+                case 2:
+                    print("Ok, adding to shopping cart!")
+                    moveItemToShoppingCart(storeInventory.allItems[item - 1])
+
+                    break
+
+                case 3:
+                    print("Cancelling Purchase...")
+                    break
 
     if not isItemFound:
         print("Item Not Found!")
@@ -116,13 +106,24 @@ def reviewMyShoppingCart():
             print(item.name)
 
         # Check to see if the user wants to purchase anything currently in their shopping cart
-        shoppingCartChoice = int(input('Would you like to purchase any held items now? 1 for YES or any other key for NO'))
 
-        if shoppingCartChoice == 1:
-            buyItemInShoppingCart()
-        else:
-            print('Leaving shopping cart as is and returning to the storefront... ')
+        print(f"Would you like to purchase any held items now?")
+        print(f"1. Yes")
+        print(f"2. No")
 
+        try:
+            checkoutChoice = int(input("(1-2) "))
+            ClampValue(checkoutChoice, 1, 2)
+            match checkoutChoice:
+                case 1:
+                    buyItemInShoppingCart()
+                    return
+                case 2:
+                    print(f"Leaving shopping cart as is and returning to the storefront...")
+                    return
+
+        except ValueError:
+            print("Please enter a valid value!")
     else:  # If cart is empty
         print('Your shopping cart is empty! Nothing to see here... ')
 
@@ -131,12 +132,19 @@ def buyItemInShoppingCart():
     userChoice = input('Type in the name of the item you want to buy from the shopping cart: ')
 
     # Compare user requested name with cart entry names and offer a purchasing offer if there is a match
+    items: Buyable
+    currentItem = 0
+    if len(myShoppingCart) > 0:
+        for items in myShoppingCart:
+            if myShoppingCart[currentItem].lower() == userChoice.lower():
+                makePurchaseFromShoppingCart(myShoppingCart[currentItem])
+                return
+            currentItem += 1
 
-    for i in myShoppingCart:
-        if myShoppingCart[i].lower() == userChoice.lower():
-            makePurchaseFromShoppingCart(myShoppingCart[i])
-        else:
-            print('Item could not be found in shopping cart ... ')
+        print('Item could not be found in shopping cart... ')
+    else:
+        print("Shopping cart is empty!")
+        return
 
 
 def removeItemFromShoppingCart(item):
@@ -163,7 +171,6 @@ def moveItemFromShoppingCartToInventory(item):
 
 
 def makePurchaseFromStore(item):
-
     # If you can afford the item, buy it and remove it from the store
     if myBankAccount.canAfford(item.price):
         myBankAccount.makePurchase(item.price)
@@ -183,6 +190,9 @@ def makePurchaseFromShoppingCart(item):
             print(f'Purchase complete! You now own {item.name}')
             myStuff.append(item)
             myShoppingCart.remove(item)
+        else:
+            print("Purchase cancelled due to inputting an incorrect password!")
+            return
     else:
         print('You can\'t afford that item ... ')
 
@@ -225,7 +235,7 @@ def shoppingMenu():
         print("7. Exit program")
 
         userChoice = int(input())
-        userChoice = clampValue(userChoice, 1, 7)
+        userChoice = ClampValue(userChoice, 1, 7)
 
         match userChoice:
             case 1:
