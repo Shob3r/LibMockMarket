@@ -8,6 +8,7 @@ class StoreInventory:
         self.foodForSale = []
         self.gamesForSale = []
         self.allItems = []
+        self.allSoldItems = []
         self.initializeInventoryLists()
         self.fullInvList()
 
@@ -22,6 +23,15 @@ class StoreInventory:
     def getFullInventory(self):
         self.getClothesInventory()
         self.getFoodInventory()
+        self.getGamesInventory()
+
+    def onlyGetFoodInventory(self):
+        self.getFoodInventory()
+
+    def onlyGetClothesInventory(self):
+        self.getClothesInventory()
+
+    def onlyGetGamesInventory(self):
         self.getGamesInventory()
 
     def getClothesInventory(self):

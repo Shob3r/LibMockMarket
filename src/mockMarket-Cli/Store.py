@@ -3,6 +3,7 @@ from BankAccount import BankAccount
 from Buyable import Buyable, BuyableGame, BuyableFood, BuyableClothing
 from clearScreen import clearScreen
 from ClampValue import ClampValue
+from EmployeePanel import EmployeePanel
 
 # Initialize inventories
 storeInventory = StoreInventory()
@@ -11,6 +12,7 @@ myShoppingCart = list()
 
 # Other Variables
 allStoreItems = storeInventory.allItems
+employeePanel = EmployeePanel()
 
 # Placeholder bank account (Gets replaced on program start with an actual Bank Account)
 myBankAccount = BankAccount(0, '')
@@ -93,6 +95,7 @@ def reviewFinancials():
                     return
         else:
             print("Pick a choice between 1 and 2!")
+
     except TypeError:
         print("Pick a valid number!")
         reviewFinancials()
@@ -220,6 +223,39 @@ def setupBankAccount():
     myBankAccount.setPassword()
 
 
+def getInventoryMenu():
+    inventoryListChoice = None
+
+    print("Which product type would you like to view?")
+    print("1. Food")
+    print("2. Clothes")
+    print("3. Games")
+    print("4. The entire inventory")
+    print("5. Back")
+
+    try:
+        inventoryListChoice = int(input("(1-5 )"))
+        inventoryListChoice = ClampValue(inventoryListChoice, 1, 5)
+    except ValueError:
+        print("Please input a valid value!")
+
+    match inventoryListChoice:
+        case 1:
+            storeInventory.onlyGetFoodInventory()
+            return
+        case 2:
+            storeInventory.onlyGetClothesInventory()
+            return
+        case 3:
+            storeInventory.onlyGetGamesInventory()
+            return
+        case 4:
+            storeInventory.getFullInventory()
+            return
+        case 5:
+            return
+
+
 def shoppingMenu():
     stillShopping = True
 
@@ -231,7 +267,7 @@ def shoppingMenu():
         print("3. View your cart of held items")
         print("4. Review the items you already own")
         print("5. View the status of your financials")
-        print("6. Launch Store GUI")
+        print("6. Employee Login")
         print("7. Exit program")
 
         userChoice = int(input())
@@ -239,7 +275,7 @@ def shoppingMenu():
 
         match userChoice:
             case 1:
-                storeInventory.getFullInventory()
+                getInventoryMenu()
             case 2:
                 buyItem()
             case 3:
@@ -250,7 +286,7 @@ def shoppingMenu():
                 print(f"you currently have ${myBankAccount.balanceReport()} in your bank account")
                 reviewFinancials()
             case 6:
-                print("YOUR CONTENT HERE!")
+                employeePanel.verifyPassword()
             case 7:
                 print('Thanks for shopping! Now exiting program ... ')
                 stillShopping = False
