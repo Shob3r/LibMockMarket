@@ -234,7 +234,7 @@ def getInventoryMenu():
     print("5. Back")
 
     try:
-        inventoryListChoice = int(input("(1-5 )"))
+        inventoryListChoice = int(input("(1-5) "))
         inventoryListChoice = ClampValue(inventoryListChoice, 1, 5)
     except ValueError:
         print("Please input a valid value!")
