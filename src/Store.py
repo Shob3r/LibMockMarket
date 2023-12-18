@@ -69,9 +69,23 @@ def BuyItem():
 
 
 def ReviewMyInventory():
-    print('Here is a list of the items you now own: ')
-    for item in myStuff:
-        print(item.name)
+    print("How many items would you like to see?")
+    try:
+        numItems = int(input()) - 1
+        if numItems > len(myShoppingCart):
+            numItems = len(myShoppingCart)
+        print(f"Here are the first {numItems + 1} items you have purchased!!")
+        for item in myShoppingCart:
+            x = 0
+            item: Buyable
+            if x == numItems:
+                break
+            else:
+                print(f"{item.name}, Price: {item.price}")
+                x += 1
+
+    except ValueError:
+        print("Please input a valid value!")
 
 
 def ReviewFinancials():
