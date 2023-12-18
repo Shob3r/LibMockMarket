@@ -5,7 +5,6 @@ class Buyable:
         self.category = category
 
 
-
 class BuyableClothing(Buyable):
     def __init__(self, price, name, size):
         super().__init__(price, name, "Clothing")

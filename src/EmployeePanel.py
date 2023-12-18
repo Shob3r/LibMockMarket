@@ -4,7 +4,7 @@ from ClampValue import ClampValue
 class EmployeePanel:
     employeePassword = "thisPasswordIsVerySecure"
 
-    def verifyPassword(self):
+    def VerifyEmployeePassword(self):
         passEntry = input('Attempting to access employee panel, please enter password: ')
         if self.employeePassword == passEntry:
             return True
@@ -13,7 +13,7 @@ class EmployeePanel:
             return False
 
     def EmployeeMenu(self):
-        if self.verifyPassword():
+        if self.VerifyEmployeePassword():
             print("Welcome to the employee menu!")
             print("What would you like to do?")
             print("1. Restock items to inventory")

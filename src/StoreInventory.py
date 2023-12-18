@@ -9,50 +9,50 @@ class StoreInventory:
         self.gamesForSale = []
         self.allItems = []
         self.allSoldItems = []
-        self.initializeInventoryLists()
-        self.fullInvList()
+        self.InitializeInitialInventory()
+        self.AllItemsInit()
 
-    def returnFullInventory(self):
+    def ReturnAllItems(self):
         return self.foodForSale + self.clothesForSale + self.gamesForSale
 
-    def fullInvList(self):
+    def AllItemsInit(self):
         item: Buyable
-        for item in self.returnFullInventory():
+        for item in self.ReturnAllItems():
             self.allItems.append(item)
 
-    def getFullInventory(self):
-        self.getClothesInventory()
-        self.getFoodInventory()
-        self.getGamesInventory()
+    def GetFullInventory(self):
+        self.DisplayClothesInventory()
+        self.DisplayFoodInventory()
+        self.DisplayGamesInventory()
 
-    def onlyGetFoodInventory(self):
-        self.getFoodInventory()
+    def GetFoodInventory(self):
+        self.DisplayFoodInventory()
 
-    def onlyGetClothesInventory(self):
-        self.getClothesInventory()
+    def GetClothesInventory(self):
+        self.DisplayClothesInventory()
 
-    def onlyGetGamesInventory(self):
-        self.getGamesInventory()
+    def GetGamesInventory(self):
+        self.DisplayGamesInventory()
 
-    def getClothesInventory(self):
+    def DisplayClothesInventory(self):
         print("-*-*-*--Clothes--*-*-*-")
         item: BuyableClothing
         for item in self.clothesForSale:
             print(f"Size {item.size} {item.name}, Price: ${item.price}")
 
-    def getFoodInventory(self):
+    def DisplayFoodInventory(self):
         print("-*-*-*--Food--*-*-*-")
         item: BuyableFood
         for item in self.foodForSale:
             print(f"{item.name}, Weight: {item.weight}g, Price: ${item.price}")
 
-    def getGamesInventory(self):
+    def DisplayGamesInventory(self):
         print("-*-*-*--Games--*-*-*-")
         item: BuyableGame
         for item in self.gamesForSale:
             print(f"{item.name}, Genre: {item.genre}, {item.numPlayers} player game, Price: ${item.price}")
 
-    def removeItemFromInventory(self, item):
+    def RemoveItemFromStoreInventory(self, item):
         if type(item) is BuyableClothing:
             self.clothesForSale.remove(item)
         elif type(item) is BuyableFood:
@@ -62,9 +62,9 @@ class StoreInventory:
 
             # Reset All Items List
             self.allItems = []
-            self.fullInvList()
+            self.AllItemsInit()
 
-    def restockItemToInventory(self, item):
+    def AddItemToInventory(self, item):
         if type(item) is BuyableClothing:
             self.clothesForSale.append(item)
         elif type(item) is BuyableFood:
@@ -74,9 +74,9 @@ class StoreInventory:
 
         # Reset All Items List
         self.allItems = []
-        self.fullInvList()
+        self.AllItemsInit()
 
-    def addMultiple(self, item, num):
+    def AddMultipleItemsToInventory(self, item, num):
         if type(item) is BuyableClothing:
             for x in range(num):
                 self.clothesForSale.append(item)
@@ -87,7 +87,7 @@ class StoreInventory:
             for x in range(num):
                 self.gamesForSale.append(item)
 
-    def initializeInventoryLists(self):
+    def InitializeInitialInventory(self):
         # Populate initial clothes list
         self.clothesForSale.append(BuyableClothing(59.99, 'Hoodie', 'medium'))
         self.clothesForSale.append(BuyableClothing(59.99, 'Hoodie', 'large'))
@@ -98,7 +98,7 @@ class StoreInventory:
 
         # Gloves
         gloves = BuyableClothing(13.49, 'Gloves', 'Medium')
-        self.addMultiple(gloves, 3)
+        self.AddMultipleItemsToInventory(gloves, 3)
 
         # Populate initial food list
         # Perishables
@@ -110,7 +110,7 @@ class StoreInventory:
         self.foodForSale.append(BuyableFood(1.49, 'Beans', 300))
         self.foodForSale.append(BuyableFood(0.99, 'Noodles', 125))
         rice = BuyableFood(7.99, 'Rice', 2000)
-        self.addMultiple(rice, 5)
+        self.AddMultipleItemsToInventory(rice, 5)
 
         # Populate initial games list
         # Board Games

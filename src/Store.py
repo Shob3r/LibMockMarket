@@ -1,7 +1,6 @@
 from StoreInventory import StoreInventory
 from BankAccount import BankAccount
 from Buyable import Buyable, BuyableGame, BuyableFood, BuyableClothing
-from clearScreen import clearScreen
 from ClampValue import ClampValue
 from EmployeePanel import EmployeePanel
 
@@ -18,14 +17,19 @@ employeePanel = EmployeePanel()
 myBankAccount = BankAccount(0, '')
 
 
-def buyItem():
+def Startup():
+    CreateBankAccount()
+    MainMenu()
+
+
+def BuyItem():
     userItem = input("Which item would you like to buy?").lower()
     storeItems: Buyable
     item = 0
 
     isItemFound = False
 
-    for storeItems in storeInventory.returnFullInventory():
+    for storeItems in storeInventory.ReturnAllItems():
         item += 1
 
         if storeItems.name.lower() == userItem:
@@ -47,12 +51,12 @@ def buyItem():
             match itemFoundChoice:
                 case 1:
                     print("Ok, buying now!")
-                    makePurchaseFromStore(storeInventory.allItems[item - 1])
+                    MakePurchaseFromStore(storeInventory.allItems[item - 1])
                     break
 
                 case 2:
                     print("Ok, adding to shopping cart!")
-                    moveItemToShoppingCart(storeInventory.allItems[item - 1])
+                    MoveItemToShoppingCart(storeInventory.allItems[item - 1])
 
                     break
 
@@ -64,13 +68,13 @@ def buyItem():
         print("Item Not Found!")
 
 
-def reviewMyInventory():
+def ReviewMyInventory():
     print('Here is a list of the items you now own: ')
     for item in myStuff:
         print(item.name)
 
 
-def reviewFinancials():
+def ReviewFinancials():
     print(f"Would you like to deposit money into the account?")
 
     print(f"1. Yes")
@@ -89,7 +93,7 @@ def reviewFinancials():
                     if howMuchToDeposit < 0:
                         print(f"ERROR: Cannot deposit a negative value into an account!")
                         return
-                    myBankAccount.makeDeposit(howMuchToDeposit)
+                    myBankAccount.MakeDeposit(howMuchToDeposit)
                 case 2:
                     print(f"Not making a deposit!")
                     return
@@ -98,11 +102,11 @@ def reviewFinancials():
 
     except TypeError:
         print("Pick a valid number!")
-        reviewFinancials()
+        ReviewFinancials()
         return
 
 
-def reviewMyShoppingCart():
+def ReviewShoppingCart():
     if len(myShoppingCart) > 0:
         print('Here are all of the items being held in your shopping cart: ')
         for item in myShoppingCart:
@@ -119,7 +123,7 @@ def reviewMyShoppingCart():
             ClampValue(checkoutChoice, 1, 2)
             match checkoutChoice:
                 case 1:
-                    buyItemInShoppingCart()
+                    BuyItemInShoppingCart()
                     return
                 case 2:
                     print(f"Leaving shopping cart as is and returning to the storefront...")
@@ -131,7 +135,7 @@ def reviewMyShoppingCart():
         print('Your shopping cart is empty! Nothing to see here... ')
 
 
-def buyItemInShoppingCart():
+def BuyItemInShoppingCart():
     userChoice = input('Type in the name of the item you want to buy from the shopping cart: ')
 
     # Compare user requested name with cart entry names and offer a purchasing offer if there is a match
@@ -140,7 +144,7 @@ def buyItemInShoppingCart():
     if len(myShoppingCart) > 0:
         for items in myShoppingCart:
             if myShoppingCart[currentItem].lower() == userChoice.lower():
-                makePurchaseFromShoppingCart(myShoppingCart[currentItem])
+                MakePurchaseFromCart(myShoppingCart[currentItem])
                 return
             currentItem += 1
 
@@ -150,7 +154,7 @@ def buyItemInShoppingCart():
         return
 
 
-def removeItemFromShoppingCart(item):
+def RemoveItemFromCart(item):
     removeChoice = input('Which item would you like to remove from your shopping cart?')
 
     # Compare user requested name with cart entry names and remove item if found
@@ -158,38 +162,38 @@ def removeItemFromShoppingCart(item):
     for itemInCart in myShoppingCart:
         if itemInCart.name.lower() == removeChoice.lower():
             print(f'You have removed {itemInCart.name} from your shopping cart!')
-            moveItemFromShoppingCartToInventory(itemInCart)
+            MoveItemFromShoppingCartToInventory(itemInCart)
         else:
             print('Item could not be found in your shopping cart. Nothing was removed.')
 
 
-def moveItemToShoppingCart(item):
+def MoveItemToShoppingCart(item):
     myShoppingCart.append(item)
     storeInventory.allItems.remove(item)
 
 
-def moveItemFromShoppingCartToInventory(item):
-    storeInventory.restockItemToInventory(item)
+def MoveItemFromShoppingCartToInventory(item):
+    storeInventory.AddItemToInventory(item)
     myShoppingCart.remove(item)
 
 
-def makePurchaseFromStore(item):
+def MakePurchaseFromStore(item):
     # If you can afford the item, buy it and remove it from the store
-    if myBankAccount.canAfford(item.price):
-        myBankAccount.makePurchase(item.price)
+    if myBankAccount.IsItemAffordable(item.price):
+        myBankAccount.MakePurchase(item.price)
         print(f'Purchase complete! You now own {item.name}')
         myStuff.append(item)
-        storeInventory.removeItemFromInventory(item)
+        storeInventory.RemoveItemFromStoreInventory(item)
     else:
         print('You can\'t afford this item ... ')
 
 
-def makePurchaseFromShoppingCart(item):
+def MakePurchaseFromCart(item):
     # If you can afford the item, buy it and remove it from the store
-    if myBankAccount.canAfford(item.price):
+    if myBankAccount.IsItemAffordable(item.price):
 
-        if myBankAccount.checkPassword():  # Check for password
-            myBankAccount.makePurchase(item.price)
+        if myBankAccount.VerifyPassword():  # Check for password
+            myBankAccount.MakePurchase(item.price)
             print(f'Purchase complete! You now own {item.name}')
             myStuff.append(item)
             myShoppingCart.remove(item)
@@ -204,7 +208,7 @@ def makePurchaseFromShoppingCart(item):
 print('Welcome to the cool people store B)')
 
 
-def setupBankAccount():
+def CreateBankAccount():
     # setup bank account
     print('To begin, please set up a bank account.')
     try:
@@ -213,17 +217,17 @@ def setupBankAccount():
 
         if depositCheck <= 0:
             print("LOL! you are bankrupt!!")
-        myBankAccount.makeInitialDeposit(depositCheck)
+        myBankAccount.MakeInitialDeposit(depositCheck)
 
     except ValueError:
         print("Please enter a valid integer!")
-        setupBankAccount()
+        CreateBankAccount()
         return
 
-    myBankAccount.setPassword()
+    myBankAccount.SetPassword()
 
 
-def getInventoryMenu():
+def GetInventory():
     inventoryListChoice = None
 
     print("Which product type would you like to view?")
@@ -241,22 +245,22 @@ def getInventoryMenu():
 
     match inventoryListChoice:
         case 1:
-            storeInventory.onlyGetFoodInventory()
+            storeInventory.GetFoodInventory()
             return
         case 2:
-            storeInventory.onlyGetClothesInventory()
+            storeInventory.GetClothesInventory()
             return
         case 3:
-            storeInventory.onlyGetGamesInventory()
+            storeInventory.GetGamesInventory()
             return
         case 4:
-            storeInventory.getFullInventory()
+            storeInventory.GetFullInventory()
             return
         case 5:
             return
 
 
-def shoppingMenu():
+def MainMenu():
     stillShopping = True
 
     while stillShopping:
@@ -275,22 +279,21 @@ def shoppingMenu():
 
         match userChoice:
             case 1:
-                getInventoryMenu()
+                GetInventory()
             case 2:
-                buyItem()
+                BuyItem()
             case 3:
-                reviewMyShoppingCart()
+                ReviewShoppingCart()
             case 4:
-                reviewMyInventory()
+                ReviewMyInventory()
             case 5:
-                print(f"you currently have ${myBankAccount.balanceReport()} in your bank account")
-                reviewFinancials()
+                print(f"you currently have ${myBankAccount.BalanceReport()} in your bank account")
+                ReviewFinancials()
             case 6:
-                employeePanel.verifyPassword()
+                employeePanel.VerifyEmployeePassword()
             case 7:
                 print('Thanks for shopping! Now exiting program ... ')
                 stillShopping = False
 
 
-setupBankAccount()
-shoppingMenu()
+Startup()

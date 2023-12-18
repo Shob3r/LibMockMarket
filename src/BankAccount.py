@@ -6,37 +6,37 @@ class BankAccount:
     def __init__(self, initialDeposit, password=None):
         self.balance = float(initialDeposit)
         if password is None:
-            self.setPassword()
+            self.SetPassword()
 
-    def setPassword(self):
+    def SetPassword(self):
         global password
         password = input('Please enter a password for your account: ')
         if password == '':
             print("Passwords cannot be empty!")
             clearScreen()
-            self.setPassword()
+            self.SetPassword()
         else:
             if password is not None:
                 confirmPassword = input('Please input your password one more time to confirm it! ')
                 if password != confirmPassword:
                     print('Your passwords to not match... ')
-                    self.setPassword()
+                    self.SetPassword()
                 else:
                     print('Password set! Your account is now ready! ')
                     return
             else:
                 print("Please enter a password! ")
-                self.setPassword()
+                self.SetPassword()
 
     # Returns true if you have more balance than cost, false if you don't
-    def canAfford(self, amount):
+    def IsItemAffordable(self, amount):
         if float(amount) <= self.balance:
             return True
         else:
             return False
 
-    def makePurchase(self, amount):
-        if self.checkPassword():
+    def MakePurchase(self, amount):
+        if self.VerifyPassword():
             if amount <= self.balance:
                 self.balance -= amount
                 print(f'{amount} spent from your account.')
@@ -48,18 +48,18 @@ class BankAccount:
         else:
             return False
 
-    def makeDeposit(self, depositAmount):
-        if self.checkPassword():
+    def MakeDeposit(self, depositAmount):
+        if self.VerifyPassword():
             self.balance += depositAmount
             print(f"Deposit completed! you now have ${self.balance} on your account!")
 
-    def makeInitialDeposit(self, initialDepositAmount):
+    def MakeInitialDeposit(self, initialDepositAmount):
         self.balance += initialDepositAmount
 
-    def balanceReport(self):
+    def BalanceReport(self):
         print(f'You have $ {self.balance} left in your account.')
 
-    def checkPassword(self):
+    def VerifyPassword(self):
         passEntry = input('Please enter your password to confirm your identity: ')
         if passEntry == password:
             return True
