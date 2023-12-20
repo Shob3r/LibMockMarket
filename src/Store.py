@@ -23,7 +23,7 @@ def Startup():
 
 
 def BuyItem():
-    userItem = input("Which item would you like to buy?").lower()
+    userItem = input("Which item would you like to buy? ").lower()
     storeItems: Buyable
     item = 0
 
@@ -91,17 +91,17 @@ def ReviewMyInventory():
 
 
 def ReviewFinancials():
-    print(f"Would you like to deposit money into the account?")
+    print("Would you like to deposit money into the account?")
 
-    print(f"1. Yes")
-    print(f"2. No")
+    print("1. Yes")
+    print("2. No")
     try:
         depositCheck = int(input())
         if 1 <= depositCheck <= 2:
             match depositCheck:
                 case 1:
                     try:
-                        howMuchToDeposit = float(input(f"How much money would you like to deposit into your account?"))
+                        howMuchToDeposit = float(input("How much money would you like to deposit into your account?"))
                     except ValueError:
                         print("ERROR: value is not valid")
                         return
@@ -111,7 +111,7 @@ def ReviewFinancials():
                         return
                     myBankAccount.MakeDeposit(howMuchToDeposit)
                 case 2:
-                    print(f"Not making a deposit!")
+                    print("Not making a deposit!")
                     return
         else:
             print("Pick a choice between 1 and 2!")
@@ -130,9 +130,9 @@ def ReviewShoppingCart():
 
         # Check to see if the user wants to purchase anything currently in their shopping cart
 
-        print(f"Would you like to purchase any held items now?")
-        print(f"1. Yes")
-        print(f"2. No")
+        print("Would you like to purchase any held items now?")
+        print("1. Yes")
+        print("2. No")
 
         try:
             checkoutChoice = int(input("(1-2) "))
@@ -198,7 +198,7 @@ def MakePurchaseFromStore(item):
         myBankAccount.MakePurchase(item.price)
         print(f'Purchase complete! You now own {item.name}')
         myStuff.append(item)
-        storeInventory.RemoveItemFromStoreInventory(item)
+        storeInventory.RemoveItemFromStoreInventory(item, True)
     else:
         print('You can\'t afford this item ... ')
 
@@ -217,20 +217,6 @@ def MakePurchaseFromCart(item):
             return
     else:
         print('You can\'t afford that item ... ')
-
-
-def GetSoldItemsMenu():
-    print("How many recent purchases would you like to view?")
-    if len(storeInventory.allSoldItems) == 0:
-        print("You have no purchased items from us yet!")
-        return
-    
-    try:
-        numSoldItems = int(input())
-        print(f"Ok, displaying the first {numSoldItems} most recent items you have purchased from us!")
-        storeInventory.GetSpecificSoldItems(numSoldItems)
-    except ValueError:
-        print("Please input a valid number!")
 
 # PROGRAM BEGINS HERE
 print('Welcome to the cool people store B)')
@@ -299,12 +285,11 @@ def MainMenu():
         print("3. View your cart of held items")
         print("4. Review the items you already own")
         print("5. View the status of your financials")
-        print("6. Review your sold items")
-        print("7. Employee Login")
-        print("8. Exit program")
+        print("6. Employee Login")
+        print("7. Exit program")
 
         userChoice = int(input())
-        userChoice = ClampValue(userChoice, 1, 8)
+        userChoice = ClampValue(userChoice, 1, 7)
 
         match userChoice:
             case 1:
@@ -314,15 +299,23 @@ def MainMenu():
             case 3:
                 ReviewShoppingCart()
             case 4:
-                ReviewMyInventory()
+                print("How many recent purchases would you like to view?")
+                if len(storeInventory.allSoldItems) == 0:
+                    print("You have no purchased items from us yet!")
+                else:
+                    try:
+                        numSoldItems = int(input())
+                        print(f"Ok, displaying the first {numSoldItems} most recent items you have purchased from us!")
+                        storeInventory.GetSpecificSoldItems(numSoldItems)
+                    except ValueError:
+                        print("Please input a valid number!") 
+
             case 5:
                 print(f"you currently have ${myBankAccount.BalanceReport()} in your bank account")
                 ReviewFinancials()
             case 6:
-                GetSoldItemsMenu()    
-            case 7:
                 employeePanel.VerifyEmployeePassword()
-            case 8:
+            case 7:
                 print('Thanks for shopping! Now exiting program ... ')
                 stillShopping = False
 

@@ -19,18 +19,17 @@ class StoreInventory:
         item: Buyable
         for item in self.ReturnAllItems():
             self.allItems.append(item)
-
-    def GetAllSoldItems(self):
-        return self.allItems
     
     def GetSpecificSoldItems(self, count):
-        for item in self.GetAllSoldItems:
+        for item in self.allSoldItems:
             item:Buyable
             x = 0
-            if x >= count - 1:
+
+            if x > 0 and x >= count - 1:
                 break
-            print(f"Purchased {item.name} for ${item.price}")
-            x += 1
+            else:
+                print(f"Purchased {item.name} for ${item.price}")
+                x += 1
 
     def AddToSoldItems(self, item):
         self.allSoldItems.append(item)
