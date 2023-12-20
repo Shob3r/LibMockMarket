@@ -20,6 +20,21 @@ class StoreInventory:
         for item in self.ReturnAllItems():
             self.allItems.append(item)
 
+    def GetAllSoldItems(self):
+        return self.allItems
+    
+    def GetSpecificSoldItems(self, count):
+        for item in self.GetAllSoldItems:
+            item:Buyable
+            x = 0
+            if x >= count - 1:
+                break
+            print(f"Purchased {item.name} for ${item.price}")
+            x += 1
+
+    def AddToSoldItems(self, item):
+        self.allSoldItems.append(item)
+
     def GetFullInventory(self):
         self.DisplayClothesInventory()
         self.DisplayFoodInventory()
@@ -52,7 +67,7 @@ class StoreInventory:
         for item in self.gamesForSale:
             print(f"{item.name}, Genre: {item.genre}, {item.numPlayers} player game, Price: ${item.price}")
 
-    def RemoveItemFromStoreInventory(self, item):
+    def RemoveItemFromStoreInventory(self, item, isPurchase):
         if type(item) is BuyableClothing:
             self.clothesForSale.remove(item)
         elif type(item) is BuyableFood:
@@ -60,9 +75,12 @@ class StoreInventory:
         elif type(item) is BuyableGame:
             self.gamesForSale.remove(item)
 
-            # Reset All Items List
-            self.allItems = []
-            self.AllItemsInit()
+        # Reset All Items List
+        self.allItems = []
+        self.AllItemsInit()
+        if isPurchase == True:
+            self.allSoldItems.append(item)
+
 
     def AddItemToInventory(self, item):
         if type(item) is BuyableClothing:

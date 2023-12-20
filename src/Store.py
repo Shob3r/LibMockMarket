@@ -68,6 +68,8 @@ def BuyItem():
         print("Item Not Found!")
 
 
+
+
 def ReviewMyInventory():
     print("How many items would you like to see?")
     try:
@@ -167,7 +169,6 @@ def BuyItemInShoppingCart():
         print("Shopping cart is empty!")
         return
 
-
 def RemoveItemFromCart(item):
     removeChoice = input('Which item would you like to remove from your shopping cart?')
 
@@ -217,6 +218,19 @@ def MakePurchaseFromCart(item):
     else:
         print('You can\'t afford that item ... ')
 
+
+def GetSoldItemsMenu():
+    print("How many recent purchases would you like to view?")
+    if len(storeInventory.allSoldItems) == 0:
+        print("You have no purchased items from us yet!")
+        return
+    
+    try:
+        numSoldItems = int(input())
+        print(f"Ok, displaying the first {numSoldItems} most recent items you have purchased from us!")
+        storeInventory.GetSpecificSoldItems(numSoldItems)
+    except ValueError:
+        print("Please input a valid number!")
 
 # PROGRAM BEGINS HERE
 print('Welcome to the cool people store B)')
@@ -285,11 +299,12 @@ def MainMenu():
         print("3. View your cart of held items")
         print("4. Review the items you already own")
         print("5. View the status of your financials")
-        print("6. Employee Login")
-        print("7. Exit program")
+        print("6. Review your sold items")
+        print("7. Employee Login")
+        print("8. Exit program")
 
         userChoice = int(input())
-        userChoice = ClampValue(userChoice, 1, 7)
+        userChoice = ClampValue(userChoice, 1, 8)
 
         match userChoice:
             case 1:
@@ -304,8 +319,10 @@ def MainMenu():
                 print(f"you currently have ${myBankAccount.BalanceReport()} in your bank account")
                 ReviewFinancials()
             case 6:
-                employeePanel.VerifyEmployeePassword()
+                GetSoldItemsMenu()    
             case 7:
+                employeePanel.VerifyEmployeePassword()
+            case 8:
                 print('Thanks for shopping! Now exiting program ... ')
                 stillShopping = False
 
